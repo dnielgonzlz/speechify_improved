@@ -9,6 +9,13 @@ chrome.runtime.onInstalled.addListener(() => {
     speechPitch: 1.0,
     autoplay: false
   });
+
+  // Create context menu item
+  chrome.contextMenus.create({
+    id: 'read-selection',
+    title: 'Read this', 
+    contexts: ['selection']
+  });
 });
 
 // Listen for messages from popup or content scripts
@@ -27,21 +34,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   return true;
 });
 
-// Add context menu for text selection
-chrome.runtime.onInstalled.addListener(() => {
-  chrome.contextMenus.create({
-    id: 'readSelectedText',
-    title: 'Read with Speechify Copy',
-    contexts: ['selection']
-  });
-});
-
 // Handle context menu clicks
-chrome.contextMenus.onClicked.addListener((info, tab) => {
-  if (info.menuItemId === 'readSelectedText') {
-    chrome.tabs.sendMessage(tab.id, {
-      action: 'start',
-      text: info.selectionText
+chrome.contextMenus.onClicked.addListener((info) => {
+  if (info.menuItemId === 'read-selection' && info.selectionText) {
+    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+      chrome.tabs.sendMessage(tabs[0].id, {
+        action: 'readSelectedText',
+        selectedText: info.selectionText
+      });
     });
   }
 });

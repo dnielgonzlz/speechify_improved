@@ -1,13 +1,14 @@
 {
   "manifest_version": 3,
   "name": "Speechify Copy",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Text-to-speech extension that highlights words as they're being read",
   "permissions": [
     "activeTab",
     "storage",
     "scripting",
-    "tts"
+    "tts",
+    "contextMenus"
   ],
   "action": {
     "default_popup": "popup.html",

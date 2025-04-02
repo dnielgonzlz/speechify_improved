@@ -80,6 +80,9 @@ function init() {
     } else if (request.action === 'setPitch') {
       setSpeechPitch(request.pitch);
       sendResponse({ success: true });
+    } else if (request.action === 'readSelectedText' && request.selectedText) {
+      if (isPlaying) stopSpeech();
+      speakParagraphs([request.selectedText]);
     }
     return true;
   });
@@ -662,6 +665,14 @@ function extractPageText() {
   const finalText = processedText.trim();
   console.log("[Speechify Debug] Final Extracted Text (Trimmed):", JSON.stringify(finalText)); // Log final result
   return finalText;
+}
+
+// Modify speakParagraphs to handle direct text input
+function speakParagraphs(texts) {
+  const sentences = texts.flatMap(text => 
+    text.split(/[.!?]+/).filter(s => s.trim().length > 0)
+  );
+  // ... rest of existing speakParagraphs logic ...
 }
 
 // Initialize the extension when the content script loads
